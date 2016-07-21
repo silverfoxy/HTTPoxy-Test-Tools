@@ -1,6 +1,6 @@
 # HTTPoxy-Test-Tools
 
-I'm developing tools to test for HTTPoxy vulnerability.
+I'm developing tools to test for <a href="https://httpoxy.org/">HTTPoxy vulnerability</a>.
 The tool finds CGI directory, adds a temporary file that returns the HTTP_PROXY environment variable. The script then sends a GET request to this CGI file and sets the "proxy" header.
 If the environment variable is affected, then you're vulnerable.
 
