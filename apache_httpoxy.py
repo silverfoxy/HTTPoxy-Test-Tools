@@ -27,7 +27,8 @@ class TestSuite :
 		os.chmod(self.cgi_dir + self.filename, 0755)
 	def run_test(self) :
 		vprint('[+] Sending Get Request to http://127.0.0.1/cgi-bin/' + self.filename + ' with proxy header set to 10.10.10.10')
-		response = urllib2.urlopen('http://127.0.0.1/cgi-bin/' + self.filename, headers = {'proxy': '10.10.10.10'}).read()
+		request = urllib2.Reqeust('http://127.0.0.1/cgi-bin/' + self.filename, headers = {'proxy': '10.10.10.10'})
+		response = urllib2.urlopen(request).read()
 		vprint('[+] Testing proxy in response')
 		if '10.10.10.10' in response :
 			vprint('[+] Proxy was set in response')
