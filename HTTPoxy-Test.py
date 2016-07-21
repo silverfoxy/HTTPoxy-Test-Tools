@@ -7,7 +7,7 @@ class ApacheConfigParser :
 	def __init__(self, filename) :
 		self.config_file = filename
 	def get_cgi_dir(self) :
-		with open(open(self.config_file)) as file :
+		with open(self.config_file) as file :
 			for line, in file :
 				if CGI_CONFIG_PATTERN in line :
 					return line.split()[2]
