@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, requests, argparse
+import os, urllib2, argparse
 
 class ApacheConfigParser :
 	CGI_CONFIG_PATTERN = 'ScriptAlias /cgi-bin/'
@@ -27,9 +27,9 @@ class TestSuite :
 		os.chmod(self.cgi_dir + self.filename, 0755)
 	def run_test(self) :
 		vprint('[+] Sending Get Request to http://127.0.0.1/cgi-bin/' + self.filename + ' with proxy header set to 10.10.10.10')
-		response = requests.get('http://127.0.0.1/cgi-bin/' + self.filename, headers = {'proxy': '10.10.10.10'})
+		response = urllib2.urlopen('http://127.0.0.1/cgi-bin/' + self.filename, headers = {'proxy': '10.10.10.10'}).read()
 		vprint('[+] Testing proxy in response')
-		if '10.10.10.10' in response.text :
+		if '10.10.10.10' in response :
 			vprint('[+] Proxy was set in response')
 			vprint('[-] ===== Server Vulnerable =====')
 			bprint(1)
