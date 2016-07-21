@@ -21,13 +21,13 @@ class TestSuite :
 		test_file.write('import os')
 		test_file.write('print "Content-Type: test/html\n"')
 		test_file.write('print os.environ.get(\'HTTP_PROXY\')')
-	def set_permissions :
+	def set_permissions() :
 		os.chmod(self.cgi_dir + '/' + self.filename, 755)
-	def run_test :
+	def run_test() :
 		response = requests.get('127.0.0.1/cgi-bin/' + self.filename, headers = {'proxy': '1.2.3.4'})
 		if '1.2.3.4' in response.text :
 			print 'Server Vulnerable'
-	def clean_up :
+	def clean_up() :
 		os.remove(self.cgi_dir + '/' + self.filename)
 
 if __name__ == '__init__' :
@@ -39,4 +39,3 @@ if __name__ == '__init__' :
 	test_suite.set_permissions()
 	test_file.run_test()
 	test_suite.clean_up()
-	
