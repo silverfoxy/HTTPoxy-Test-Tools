@@ -1,0 +1,6 @@
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Release\iis_httpoxy.exe
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Release\iis_httpoxy.pdb
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Release\CommandLine.dll
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Release\CommandLine.xml
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Release\iis_httpoxy.exe
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Release\iis_httpoxy.pdb
