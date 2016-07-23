@@ -3,3 +3,8 @@
 \\mac\home\documents\visual studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.csprojResolveAssemblyReference.cache
 \\mac\home\documents\visual studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.exe
 \\mac\home\documents\visual studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.pdb
+C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.exe
+C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.pdb
+C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\bin\Debug\iis_httpoxy.exe
+C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\bin\Debug\iis_httpoxy.pdb
+C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.csprojResolveAssemblyReference.cache
