@@ -8,3 +8,12 @@ C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_
 C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\bin\Debug\iis_httpoxy.exe
 C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\bin\Debug\iis_httpoxy.pdb
 C:\Users\B_Azad\Documents\GitHubVisualStudio\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.csprojResolveAssemblyReference.cache
+\\Mac\Home\Documents\HTTPoxy\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.exe
+\\Mac\Home\Documents\HTTPoxy\HTTPoxy-Test-Tools\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.pdb
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.exe
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.pdb
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Debug\iis_httpoxy.exe
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Debug\iis_httpoxy.pdb
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\obj\Debug\iis_httpoxy.csprojResolveAssemblyReference.cache
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Debug\CommandLine.dll
+C:\Users\styli\Documents\Visual Studio 2015\Projects\iis_httpoxy\iis_httpoxy\bin\Debug\CommandLine.xml

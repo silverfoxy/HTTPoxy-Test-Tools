@@ -2,6 +2,8 @@
 using Microsoft.Win32;
 using System.IO;
 using System.Net;
+using System.Text;
+using CommandLine;
 
 namespace iis_httpoxy
 {
@@ -12,8 +14,22 @@ namespace iis_httpoxy
         static string CGIFileexe = "iis-cgi-test.exe";
         static string winpath = Environment.GetEnvironmentVariable("windir");
 
-        static void Main(string[] args)
+        private static bool Verbose = true;
+        private static bool BooleanOutput = false;
+
+        private static void Main(string[] args)
         {
+            var options = new Options();
+            if (Parser.Default.ParseArguments(args, options))
+            {
+                BooleanOutput = options.Boolean;
+                Verbose = !BooleanOutput;
+            }
+            else if (args.Length > 0)
+            {
+                return;
+            }
+
             //[+] Testing for CGI module presence
             bool CGIEnabled = GetCGIStatus();
             //[+] CGI is enabled
@@ -21,36 +37,65 @@ namespace iis_httpoxy
             //[-] === Server Not Vulnerable ===
             if (!CGIEnabled)
             {
-                Console.WriteLine("[-] CGI Not Enabled");
-                Console.WriteLine("[-] Server Not Vulnerable");
-                Console.ReadKey();
+                VPrint("[-] CGI Not Enabled");
+                VPrint("[-] Server Not Vulnerable");
+                BPrint("0");
                 return;
             }
             //Create folders
+            VPrint("[+] Creating CGI Directory");
             Directory.CreateDirectory(WebApplicationDirectory);
 
+            VPrint("[+] Creating CGI Files");
             CreateCGIFile(WebApplicationDirectory, CGIFilecs, CGIFileexe);
 
+            VPrint("[+] Setting Up CGI Application");
             SetupCGIFile(WebApplicationDirectory, CGIFileexe);
 
-            bool vulnerable = TestProxyHeader();
-            if (vulnerable)
+            bool vulnerable;
+            try
             {
-                Console.WriteLine("Vulnerable");
+                VPrint("[+] Sending Request");
+                vulnerable = TestProxyHeader();
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Not Vulnerable");
+                if (ex.Message.Contains("404"))
+                {
+                    vulnerable = false;
+                    goto Blocked;
+                }
+                VPrint("[-] Couldn't connect to application");
+                VPrint("[-] Test Failed");
+                Cleanup();
+                BPrint("-1");
+                VPrint("[+] Done");
+                return;
             }
-            Console.ReadKey();
-            //run test
-            //send request set proxy
-            //read proxy
-            //vulnerable or not
-            //clean up
-            //done
 
+            Blocked:
 
+            VPrint(vulnerable ? "[+] Proxy was set in response" : "[-] Proxy was not set in response");
+            VPrint(vulnerable ? "[-] ===== Server Vulnerable =====" : "[+] ===== Server Not Vulnerable =====");
+            Cleanup();
+            BPrint(vulnerable ? "1" : "0");
+            VPrint("[+] Done");
+        }
+
+        private static void VPrint(string text)
+        {
+            if (Verbose)
+            {
+                Console.WriteLine(text);
+            }
+        }
+
+        private static void BPrint(string text)
+        {
+            if (BooleanOutput)
+            {
+                Console.WriteLine(text);
+            }
         }
 
         private static bool GetCGIStatus()
@@ -69,7 +114,7 @@ namespace iis_httpoxy
         private static void CreateCGIFile(string address, string sourceFilename, string destinationFilename)
         {
             //Create .cs file
-            var content = @"using System; 
+            const string content = @"using System; 
                           using System.Collections;
 
                           class SimpleCGI
@@ -93,21 +138,28 @@ namespace iis_httpoxy
             var sourceFile = address + "\\" + sourceFilename;
             var destinationFile = address + "\\" + destinationFilename;
             RunCommand(winpath + @"\Microsoft.NET\Framework\v2.0.50727\csc.exe", "/out:" + destinationFile + " " + sourceFile);
+            RunCommand(winpath + @"\Microsoft.NET\Framework\v2.0.50727\csc.exe", string.Format("/out:{0} {1}", destinationFile, sourceFile));
         }
 
         private static void SetupCGIFile(string address, string filename)
         {
             //Add website
-            RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"add site /name:""IIS-CGI-Test"" /bindings:http://:12345 /physicalPath:""" + WebApplicationDirectory + @"""");
+            VPrint("[+] Creating Web Application");
+            RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", string.Format(@"add site /name:""IIS-CGI-Test"" /bindings:http://:12345 /physicalPath:""{0}""", WebApplicationDirectory));
             //Add Application Pool
+            VPrint("[+] Creating Application Pool");
             RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"add apppool /name:IIS-CGI-Test /managedRuntimeVersion:v2.0 /managedPipelineMode:Classic");
             //Set Application Pool Permissions
+            VPrint("[+] Setting Up Application Pool Permissions");
             RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"set config /section:applicationPools /[name='IIS-CGI-Test'].processModel.identityType:LocalService ");
             //Add website to Application Pool
+            VPrint("[+] Adding Web Application to Pool");
             RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"set app /app.name:IIS-CGI-Test/ /applicationPool:IIS-CGI-Test");
             //Add CGI Rules
-            RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"set config -section:isapiCgiRestriction /+[path='" + WebApplicationDirectory + @"\" + CGIFileexe + "',allowed='true',description='iis-cgi-test']");
+            VPrint("[+] Setting Up CGI Rules");
+            RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", string.Format(@"set config -section:isapiCgiRestriction /+[path='{0}\{1}',allowed='true',description='iis-cgi-test']", WebApplicationDirectory, CGIFileexe));
             //Add Permissions
+            VPrint("[+] Setting Up CGI Permissions");
             RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"set config ""IIS-CGI-Test"" /section:handlers -accessPolicy:""Read, Script, Execute""");
 
         }
@@ -119,17 +171,18 @@ namespace iis_httpoxy
             {
                 FileName = processAddress,
                 Arguments = arguments,
-                UseShellExecute = false
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
             process.StartInfo = startInfo;
             process.Start();
-            
+            System.Threading.Thread.Sleep(1000);
         }
 
         private static bool TestProxyHeader()
         {
-            string html = string.Empty;
-            string url = @"http://127.0.0.1:12345/" + CGIFileexe;
+            string html;
+            var url = @"http://127.0.0.1:12345/" + CGIFileexe;
 
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Headers["proxy"] = "10.10.10.10";
@@ -142,6 +195,48 @@ namespace iis_httpoxy
             }
 
             return html.Contains("10.10.10.10");
+        }
+
+        private static void Cleanup()
+        {
+            VPrint("[+] Cleaning Up");
+            //Remove Application
+            RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"delete app /appname:IIS-CGI-Test");
+            //Remove Application Pool
+            RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", @"delete apppool / apppool.name:IIS-CGI-Test");
+            //Remove CGI Rules
+            RunCommand(winpath + "\\system32\\inetsrv\\appcmd.exe", string.Format(@"set config -section:isapiCgiRestriction /-[path='{0}\{1}',allowed='true',description='iis-cgi-test']", WebApplicationDirectory, CGIFileexe));
+            //Remove Directory
+            RemoveDirectory(WebApplicationDirectory);
+        }
+
+        private static void RemoveDirectory(string address)
+        {
+            DirectoryInfo di = new DirectoryInfo(address);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+    }
+
+    class Options
+    {
+        [Option('b', "boolean", Required = false,
+          HelpText = "-b, --boolean Script returns 1 if server is vulnerable, 0 if server is not vulnerable")]
+        public bool Boolean { get; set; }
+
+        [HelpOption(HelpText = "-b, --boolean Script returns 1 if server is vulnerable, 0 if server is not vulnerable")]
+        public string GetUsage()
+        {
+            var help = new StringBuilder();
+            help.AppendLine("-b, --boolean Script returns 1 if server is vulnerable, 0 if server is not vulnerable");
+            return help.ToString();
         }
     }
 }
