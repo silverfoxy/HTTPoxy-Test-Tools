@@ -17,11 +17,15 @@ os, urllib2, argparse
 usage: apache_httpoxy.py [-h] [-b] [-c CONF]
 
 optional arguments:
+
   -h, --help            show this help message and exit
+  
   -b, --boolean         Script returns 1 if server is vulnerable, 0 if server
                         is not vulnerable
+                        
   -c CONF, --config CONF
                         Enter httpd.conf address
+                        
                         
 <b>Sample Output</b>
 
